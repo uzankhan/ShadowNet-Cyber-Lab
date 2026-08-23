@@ -1,6 +1,6 @@
 # ShadowNet Cyber Labs
 
-Made by **Uzan Khan** | ID **468675**
+Made by **Uzan Khan** 
 
 An offline, self-contained, intentionally vulnerable web application built for
 hands-on ethical hacking practice — 15 real, working vulnerabilities, no
@@ -17,6 +17,7 @@ climb.
 Requires Python 3.9+.
 
 ```bash
+git clone https://github.com/uzankhan/ShadowNet-Cyber-Lab
 cd shadownet
 pip install -r requirements.txt
 python3 app.py
@@ -82,13 +83,17 @@ shadownet/
     ├── public/              # intended file-viewer root (LFI challenge)
     └── secret/              # LFI/XXE/command-injection targets — regenerated on start
 ```
+---
 
-## Notes for submission
+## ⚡ Final Words
 
-This was built from scratch as a coursework project. If your instructor asks
-you to walk through it, the honest answer for each challenge is: *what's the
-vulnerable line of code, why is it wrong, and what's the safe fix* (e.g.
-parameterized queries instead of string formatting for #4, `shlex`/argument
-lists instead of `shell=True` for #5, escaping/auto-escaping instead of
-`|safe` for #1 and #12, a real allowlist for #3, etc.). Being able to explain
-the fix is usually worth more marks than just popping the flag.
+> *"The best way to learn security is to break it. The best way to master it is to build it. ShadowNet is my gift to the hacking community — a playground where curiosity meets code, and where every vulnerability is a lesson waiting to be learned."*
+
+**So go ahead. Break it. Earn the flags. And when you're done, come back and break it again — because the real mastery is in the journey, not the destination.**
+
+---
+
+**Happy Hacking!** 🚀  
+— **Uzan Khan**
+
+---
