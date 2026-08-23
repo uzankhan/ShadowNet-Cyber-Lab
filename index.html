@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowNet Cyber Labs</title>
+    <style>
+        /* ===== RESET ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #ff3333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== 3D ANIMATED BACKGROUND ===== */
+        .bg-3d {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at center, #1a0000 0%, #0a0a0a 100%);
+            overflow: hidden;
+        }
+        .bg-3d::before {
+            content: '';
+            position: absolute;
+            width: 200%; height: 200%;
+            top: -50%; left: -50%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255,0,0,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255,0,0,0.06) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, rgba(255,0,0,0.02) 0px, rgba(255,0,0,0.02) 2px, transparent 2px, transparent 8px);
+            animation: bgDrift 20s ease-in-out infinite alternate;
+        }
+        .bg-3d::after {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            background: repeating-conic-gradient(rgba(255,0,0,0.02) 0deg, rgba(255,0,0,0.02) 10deg, transparent 10deg, transparent 20deg);
+            animation: bgRotate 30s linear infinite;
+        }
+        @keyframes bgDrift { 0% { transform: rotate(0deg) scale(1); } 100% { transform: rotate(3deg) scale(1.05); } }
+        @keyframes bgRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ===== LOGO (Binary Style) ===== */
+        .logo-text {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: #ff0000;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(255,0,0,0.3);
+            line-height: 1.4;
+        }
+        .logo-text span { color: #ffffff; }
+
+        /* ===== NAVBAR ===== */
+        nav {
+            background: rgba(10,10,10,0.95);
+            border-bottom: 2px solid #ff0000;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        nav .logo img {
+            height: 40px;
+            filter: drop-shadow(0 0 10px rgba(255,0,0,0.3));
+        }
+        nav .logo h1 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255,0,0,0.4);
+        }
+        nav .logo h1 span { color: #ffffff; }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            color: #ff3333;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            position: relative;
+        }
+        nav ul li a:hover { color: #ffffff; text-shadow: 0 0 20px rgba(255,0,0,0.8); }
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff0000;
+            transition: 0.3s;
+        }
+        nav ul li a:hover::after { width: 100%; }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 100px 20px 60px;
+        }
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            background: linear-gradient(45deg, #ff0000, #ff4444, #ff0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200%;
+            animation: gradientMove 4s linear infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .hero p {
+            font-size: 18px;
+            color: #aa8888;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+        .hero .btn {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 16px 50px;
+            background: transparent;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 3px;
+            transition: 0.4s;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .hero .btn:hover {
+            background: #ff0000;
+            color: #0a0a0a;
+            box-shadow: 0 0 50px rgba(255,0,0,0.4);
+            transform: scale(1.05);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section h2 {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            border-bottom: 2px solid #ff000033;
+            padding-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: rgba(20,0,0,0.8);
+            border: 1px solid #ff000033;
+            padding: 30px;
+            border-radius: 12px;
+            transition: 0.4s;
+            backdrop-filter: blur(5px);
+        }
+        .card:hover {
+            border-color: #ff0000;
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(255,0,0,0.15);
+        }
+        .card h3 { color: #ff4444; font-size: 20px; margin-bottom: 15px; }
+        .card p { color: #aa8888; line-height: 1.8; }
+        .card .difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        .difficulty.easy { background: #00aa00; color: #0a0a0a; }
+        .difficulty.medium { background: #ffaa00; color: #0a0a0a; }
+        .difficulty.hard { background: #ff0000; color: #ffffff; }
+
+        /* ===== CONTACT FORM ===== */
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(20,0,0,0.8);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #ff000033;
+        }
+        form label { display: block; color: #ff6666; margin-bottom: 8px; font-weight: 600; }
+        form input, form textarea {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            background: #0a0a0a;
+            border: 1px solid #ff000033;
+            color: #ff6666;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        form input:focus, form textarea:focus {
+            border-color: #ff0000;
+            outline: none;
+            box-shadow: 0 0 30px rgba(255,0,0,0.1);
+        }
+        form button {
+            width: 100%;
+            padding: 16px;
+            background: #ff0000;
+            color: #0a0a0a;
+            border: none;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        form button:hover {
+            background: #cc0000;
+            box-shadow: 0 0 50px rgba(255,0,0,0.3);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid #ff000033;
+            color: #664444;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        footer .made-by {
+            color: #ff4444;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        footer .made-by span { color: #ffffff; }
+
+        /* ===== GREEN POPUP ===== */
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,20,0,0.95);
+            border: 3px solid #00ff00;
+            padding: 40px 50px;
+            border-radius: 16px;
+            z-index: 9999;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 0 100px rgba(0,255,0,0.2);
+            animation: popupIn 0.5s ease-out;
+            display: none;
+        }
+        .success-popup.show { display: block; }
+        @keyframes popupIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .success-popup .icon { font-size: 60px; color: #00ff00; }
+        .success-popup h2 { color: #00ff00; font-size: 28px; margin: 10px 0; }
+        .success-popup p { color: #88ff88; font-size: 16px; line-height: 1.6; }
+        .success-popup .flag-name { color: #00ff00; font-weight: 700; font-size: 20px; }
+        .success-popup .motivation { 
+            color: #aaffaa; 
+            font-style: italic; 
+            margin-top: 15px;
+            border-top: 1px solid #00ff0033;
+            padding-top: 15px;
+        }
+        .success-popup .timer {
+            color: #88ff88;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; padding: 15px; }
+            nav ul { justify-content: center; gap: 12px; }
+            .hero h1 { font-size: 32px; letter-spacing: 5px; }
+            .section { padding: 30px 15px; }
+            .success-popup { width: 90%; padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== 3D BACKGROUND ===== -->
+<div class="bg-3d"></div>
+
+<!-- ===== SUCCESS POPUP (Initially Hidden) ===== -->
+<div id="successPopup" class="success-popup">
+    <div class="icon">🎉</div>
+    <h2>CONGRATULATIONS, HACKER!</h2>
+    <p>You just earned: <span class="flag-name" id="popupFlag">FLAG{...}</span></p>
+    <p class="motivation">"Every master was once a beginner. Keep breaking, keep learning!"</p>
+    <p class="motivation" style="font-size:14px; color:#88ff88;">— ShadowNet Labs</p>
+    <div class="timer">⏳ Closing in <span id="popupTimer">10</span> seconds...</div>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+    <div class="logo">
+        <!-- Logo as Binary Text (Your Logo) -->
+        <div class="logo-text">
+            01001010<br>
+            101010<br>
+            7011000010
+        </div>
+        <h1>Shadow<span>Net</span></h1>
+    </div>
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#challenges">Challenges</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#admin" onclick="toggleAdmin()">🔓 Admin</a></li>
+    </ul>
+</nav>
+
+<!-- ===== HOME ===== -->
+<section id="home" class="hero">
+    <h1>ShadowNet Cyber Labs</h1>
+    <p>Break the system. Earn the flag. Become the legend.</p>
+    <a href="#challenges" class="btn">Start Hacking</a>
+</section>
+
+<!-- ===== CHALLENGES ===== -->
+<section id="challenges" class="section">
+    <h2>🔓 Challenges</h2>
+    <div class="grid">
+        <!-- Easy -->
+        <div class="card">
+            <h3>🟢 XSS (Reflected)</h3>
+            <p>Try: <code>?xss=&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+            <span class="difficulty easy">Beginner</span>
+        </div>
+        <div class="card">
+            <h3>🟢 IDOR</h3>
+            <p>Try: <code>?user_id=0</code> (admin profile)</p>
+            <span class="difficulty easy">Beginner</span>
+        </div>
+        <div class="card">
+            <h3>🟢 Open Redirect</h3>
+            <p>Try: <code>?url=https://google.com</code></p>
+            <span class="difficulty easy">Beginner</span>
+        </div>
+
+        <!-- Medium -->
+        <div class="card">
+            <h3>🟡 SQL Injection</h3>
+            <p>Login: <code>admin' AND SLEEP(5)--</code></p>
+            <span class="difficulty medium">Intermediate</span>
+        </div>
+        <div class="card">
+            <h3>🟡 Command Injection</h3>
+            <p>Try: <code>?ip=127.0.0.1; ls</code></p>
+            <span class="difficulty medium">Intermediate</span>
+        </div>
+        <div class="card">
+            <h3>🟡 LFI</h3>
+            <p>Try: <code>?file=../../etc/passwd</code></p>
+            <span class="difficulty medium">Intermediate</span>
+        </div>
+
+        <!-- Hard -->
+        <div class="card">
+            <h3>🔴 SSRF</h3>
+            <p>Try: <code>?url=http://169.254.169.254/</code></p>
+            <span class="difficulty hard">Advanced</span>
+        </div>
+        <div class="card">
+            <h3>🔴 Race Condition</h3>
+            <p>Double submit transfer form</p>
+            <span class="difficulty hard">Advanced</span>
+        </div>
+        <div class="card">
+            <h3>🔴 Crypto Layers</h3>
+            <p>ROT13 + Base64 + XOR</p>
+            <span class="difficulty hard">Advanced</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about" class="section">
+    <h2>About ShadowNet</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>🔐 Mission</h3>
+            <p>To educate developers and hackers through hands-on, IQ-based challenges. Every vulnerability teaches something new.</p>
+        </div>
+        <div class="card">
+            <h3>🛡️ Disclaimer</h3>
+            <p>This website is intentionally vulnerable. Designed for educational & CTF practice only. Do not use on real systems.</p>
+        </div>
+        <div class="card">
+            <h3>💀 Made By</h3>
+            <p style="color: #ff4444; font-size: 18px; font-weight: 700;">Uzan Khan</p>
+            <p style="color: #aa8888;">Ethical Hacker | Developer | CTF Player</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact" class="section">
+    <h2>Contact Us</h2>
+    <form action="#" method="POST" id="contactForm">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4" placeholder="Your message here..."></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+</section>
+
+<!-- ===== ADMIN PANEL (Hidden) ===== -->
+<div id="adminPanel" style="display:none; max-width:800px; margin:40px auto; background:rgba(20,0,0,0.9); border:2px solid #ff0000; padding:30px; border-radius:12px;">
+    <h3 style="color:#ff0000; text-align:center;">🔓 ADMIN PANEL</h3>
+    <p style="color:#aa8888; text-align:center;">Welcome, Admin! You have access to all systems.</p>
+    <div class="grid">
+        <div class="card"><h3>👤 Users</h3><p>Manage users</p></div>
+        <div class="card"><h3>🔑 Passwords</h3><p>View stored passwords</p></div>
+        <div class="card"><h3>📁 Files</h3><p>Access system files</p></div>
+        <div class="card"><h3>🛡️ Firewall</h3><p>Disable/Enable firewall</p></div>
+    </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <p>© 2025 ShadowNet Cyber Labs | Built for Educational Purposes</p>
+    <p style="margin-top:8px; font-size:12px; color:#442222;">
+        This website contains intentional vulnerabilities. Do not use on production systems.
+    </p>
+    <div class="made-by">Made by <span>Uzan Khan</span> 🔥</div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    // ===== TOGGLE ADMIN PANEL =====
+    function toggleAdmin() {
+        var panel = document.getElementById('adminPanel');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            showPopup('FLAG{ADMIN_ACCESS}');
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+
+    // ===== SHOW GREEN POPUP =====
+    function showPopup(flagName) {
+        var popup = document.getElementById('successPopup');
+        document.getElementById('popupFlag').textContent = flagName;
+        popup.classList.add('show');
+        
+        var timer = 10;
+        var interval = setInterval(function() {
+            timer--;
+            document.getElementById('popupTimer').textContent = timer;
+            if (timer <= 0) {
+                clearInterval(interval);
+                popup.classList.remove('show');
+            }
+        }, 1000);
+    }
+
+    // ===== DETECT FLAGS IN URL (Simulated Bypass) =====
+    (function() {
+        var params = new URLSearchParams(window.location.search);
+        
+        // XSS
+        if (params.has('xss')) {
+            showPopup('FLAG{XSS_EASY}');
+        }
+        
+        // IDOR
+        if (params.has('user_id') && params.get('user_id') === '0') {
+            showPopup('FLAG{IDOR_BASIC}');
+        }
+        
+        // Open Redirect
+        if (params.has('url') && params.get('url').includes('google.com')) {
+            showPopup('FLAG{OPEN_REDIRECT}');
+        }
+        
+        // Command Injection
+        if (params.has('ip') && params.get('ip').includes(';')) {
+            showPopup('FLAG{CMD_INJECT}');
+        }
+        
+        // LFI
+        if (params.has('file') && params.get('file').includes('etc/passwd')) {
+            showPopup('FLAG{LFI_PASSWD}');
+        }
+        
+        // SSRF
+        if (params.has('url') && params.get('url').includes('169.254.169.254')) {
+            showPopup('FLAG{SSRF_AWS}');
+        }
+    })();
+
+    // ===== CONTACT FORM (Simulated CSRF) =====
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Simulate flag on form submit (CSRF vulnerability)
+        showPopup('FLAG{CSRF_TOKENLESS}');
+        alert('Message sent! (CSRF vulnerability simulated)');
+        this.reset();
+    });
+
+    // ===== CONSOLE LOGS (Information Disclosure) =====
+    console.log('🔐 SECRET KEY: sk-1234567890abcdef');
+    console.log('📁 Database Password: ShadowNet@2025');
+    console.log('🔑 Admin Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...');
+    console.log('💀 Hidden Flag: FLAG{INFO_DISCLOSURE}');
+
+    // ===== LOGO ANIMATION (Particle Effect) =====
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔥 ShadowNet Cyber Labs loaded. Happy Hacking!');
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Challenges — ShadowNet{% endblock %}
+{% block content %}
+<section class="section" style="max-width:1200px;">
+  <h2>Challenges</h2>
+  <p style="color:var(--text-dim); font-size:0.9rem;">15 vulnerabilities. No difficulty labels. No hand-holding — just hints.</p>
+  {% if admin_unlocked %}
+  <div class="hint-box" style="border-color: var(--green); color: var(--green);">
+    🔓 AdminBot detected. <a href="/admin">Admin panel unlocked →</a>
+  </div>
+  {% endif %}
+</section>
+
+<div class="grid">
+  <div class="card {{ 'captured' if 'xss' in captured else '' }}" data-flag-name="Reflected XSS">
+    <h3>Reflected XSS</h3>
+    <p>The greeting page says hello to whoever you tell it to.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/xss">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('xss','hint-xss')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-xss" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'idor' in captured else '' }}" data-flag-name="IDOR">
+    <h3>IDOR</h3>
+    <p>Your profile has an ID. So does everyone else's.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/idor">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('idor','hint-idor')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-idor" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'redirect' in captured else '' }}" data-flag-name="Open Redirect">
+    <h3>Open Redirect</h3>
+    <p>This link says it'll take you home. It'll take you anywhere.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/redirect">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('redirect','hint-redirect')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-redirect" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'sqli' in captured else '' }}" data-flag-name="SQL Injection">
+    <h3>SQL Injection</h3>
+    <p>A login form that trusts your quotes a little too much.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/sqli">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('sqli','hint-sqli')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-sqli" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'cmdinj' in captured else '' }}" data-flag-name="Command Injection">
+    <h3>Command Injection</h3>
+    <p>A network tool that runs whatever you type, plus a little extra.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/cmdinj">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('cmdinj','hint-cmdinj')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-cmdinj" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'lfi' in captured else '' }}" data-flag-name="Local File Inclusion">
+    <h3>Local File Inclusion</h3>
+    <p>A file viewer that only ever meant to look in one folder.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/lfi">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('lfi','hint-lfi')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-lfi" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'ssrf' in captured else '' }}" data-flag-name="SSRF">
+    <h3>SSRF</h3>
+    <p>Some things are only reachable from the inside. Or are they?</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/ssrf">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('ssrf','hint-ssrf')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-ssrf" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'crypto' in captured else '' }}" data-flag-name="Crypto Fail">
+    <h3>Crypto Fail</h3>
+    <p>Layers upon layers. None of them are actually security.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/crypto">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('crypto','hint-crypto')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-crypto" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'xxe' in captured else '' }}" data-flag-name="XXE">
+    <h3>XXE</h3>
+    <p>An XML importer that's a little too curious about local files.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/xxe">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('xxe','hint-xxe')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-xxe" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'race' in captured else '' }}" data-flag-name="Race Condition">
+    <h3>Race Condition</h3>
+    <p>One coupon. One use. Allegedly.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/race">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('race','hint-race')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-race" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'csrf' in captured else '' }}" data-flag-name="CSRF">
+    <h3>CSRF</h3>
+    <p>A money transfer with no memory of who it trusts.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/csrf">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('csrf','hint-csrf')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-csrf" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'ssti' in captured else '' }}" data-flag-name="Server-Side Template Injection">
+    <h3>Server-Side Template Injection</h3>
+    <p>Your name becomes part of the template. Not just the page.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/ssti">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('ssti','hint-ssti')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-ssti" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'deser' in captured else '' }}" data-flag-name="Insecure Deserialization">
+    <h3>Insecure Deserialization</h3>
+    <p>Preferences that get evaluated, not just read.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/deser">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('deser','hint-deser')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-deser" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'secret' in captured else '' }}" data-flag-name="Hardcoded Secret">
+    <h3>Hardcoded Secret</h3>
+    <p>Somewhere in the frontend, a key nobody removed.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/secret">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('secret','hint-secret')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-secret" style="display:none;"></div>
+  </div>
+
+  <div class="card {{ 'captured' if 'logic' in captured else '' }}" data-flag-name="Business Logic / Price Tamper">
+    <h3>Business Logic / Price Tamper</h3>
+    <p>Checkout asks you what you'd like to pay. Literally.</p>
+    <div class="card-actions">
+      <a class="btn-mini" href="/challenges/logic">Open ↗</a>
+      <button class="btn-mini btn-hint" onclick="loadHint('logic','hint-logic')">Hint</button>
+    </div>
+    <div class="hint-box" id="hint-logic" style="display:none;"></div>
+  </div>
+</div>
+{% endblock %}

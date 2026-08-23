@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}About — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>About ShadowNet Cyber Labs</h2>
+  <div class="panel">
+    <p>ShadowNet Cyber Labs is a self-contained, offline training environment built for
+    hands-on ethical hacking practice — the same feeling as a real bug bounty program
+    or CTF, without needing to stand up your own vulnerable lab first.</p>
+
+    <p>There's no database here. Just files, sessions, and arrays — everything runs
+    in-memory or from small local files, on purpose. This is a lab, not a production
+    system.</p>
+
+    <p>15 flags are hidden across 15 real, working vulnerabilities: reflected XSS, IDOR,
+    open redirect, SQL injection, command injection, local file inclusion, SSRF, a
+    layered crypto puzzle, XXE, a race condition, CSRF, server-side template injection,
+    insecure deserialization, a hardcoded secret, and business-logic price tampering.
+    Nothing is simulated for looks — every exploit here actually works against the
+    running server.</p>
+
+    <p style="color:var(--text-dim); font-size:0.85rem; border-top:1px solid var(--border); padding-top:16px; margin-top:20px;">
+    ⚠️ Run this locally and offline. Do not deploy it to a public or shared network —
+    every route in this app is intentionally insecure.
+    </p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}SSRF — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>SSRF — Server-Side Request Forgery</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">This tool fetches a URL <i>on the server's behalf</i> and shows you the response. The server can reach places your browser can't.</p>
+    <label>URL to fetch</label>
+    <input type="text" id="ssrf-url" placeholder="http://127.0.0.1:5000/...">
+    <div style="margin-top:12px;"><button class="btn-mini" onclick="doFetch()">Fetch</button></div>
+    <div class="output-box" id="ssrf-out">// response body will appear here</div>
+  </div>
+</section>
+<script>
+async function doFetch() {
+  const url = document.getElementById('ssrf-url').value;
+  const res = await fetch('/api/fetch', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({url})
+  });
+  const data = await res.json();
+  document.getElementById('ssrf-out').textContent = JSON.stringify(data, null, 2);
+}
+</script>
+{% endblock %}

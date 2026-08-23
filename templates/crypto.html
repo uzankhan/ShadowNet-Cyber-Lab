@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Crypto Fail — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Crypto Fail</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">Open your browser console. The flag went through three layers on the way here — in this order: ROT13 → Base64 → single-byte XOR. Peel them off in reverse.</p>
+    <div class="output-box">{{ encoded }}</div>
+    <p style="color:var(--text-dim); font-size:0.8rem; margin-top:10px;">(XOR key hint logged to console.)</p>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  console.log("%c[ShadowNet] layered payload:", "color:#ff2b2b", "{{ encoded }}");
+  console.log("%c[ShadowNet] step 3 was XOR with key {{ xor_key }}", "color:#aa8888");
+  console.log("%c[ShadowNet] step 2 was base64", "color:#aa8888");
+  console.log("%c[ShadowNet] step 1 was rot13", "color:#aa8888");
+</script>
+{% endblock %}

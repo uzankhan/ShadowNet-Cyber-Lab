@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Open Redirect — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Open Redirect</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">"Return to homepage" links usually only go... home. Does this one?</p>
+    <label>Redirect target (?url=)</label>
+    <input type="text" id="redir-url" value="/" placeholder="try an external URL">
+    <div style="margin-top:12px;">
+      <button class="btn-mini" onclick="doRedirect()">Go</button>
+    </div>
+    <div class="output-box" id="redir-out">// response comment will appear here after following the link manually, or inspect it below</div>
+    <p style="color:var(--text-dim); font-size:0.8rem; margin-top:14px;">Tip: this button opens <code>/redirect?url=...</code> in a new tab so you can inspect the response headers and body.</p>
+  </div>
+</section>
+<script>
+function doRedirect() {
+  const url = document.getElementById('redir-url').value;
+  window.open('/redirect?url=' + encodeURIComponent(url), '_blank');
+}
+</script>
+{% endblock %}

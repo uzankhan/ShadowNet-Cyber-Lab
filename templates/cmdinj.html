@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Command Injection — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Command Injection</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">A tiny "network diagnostic" tool that echoes back a host you give it. Shells understand more than one command at a time.</p>
+    <label>Host</label>
+    <input type="text" id="cmd-host" value="127.0.0.1" placeholder="127.0.0.1">
+    <div style="margin-top:12px;"><button class="btn-mini" onclick="runCheck()">Run check</button></div>
+    <div class="output-box" id="cmd-out">// output will appear here</div>
+  </div>
+</section>
+<script>
+async function runCheck() {
+  const host = document.getElementById('cmd-host').value;
+  const res = await fetch('/api/ping', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({host})
+  });
+  const data = await res.json();
+  document.getElementById('cmd-out').textContent = 'Command used: ' + data.command_used + '\n\n' + data.output;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Admin — ShadowNet{% endblock %}
+{% block content %}
+<section class="section" style="text-align:center;">
+  <h2 style="color:var(--green); border-color:var(--green);">🔓 Welcome, AdminBot</h2>
+  <div class="panel" style="border-color:var(--green);">
+    <p>You spoofed your way in. That's the point.</p>
+    <p style="color:var(--text-dim); font-size:0.85rem;">This panel doesn't hand out flags directly — it just proves the check was only a
+    <code>User-Agent</code> string, which is trivial to forge. Every real flag still
+    lives inside its own challenge.</p>
+    <p style="color:var(--text-dim); font-size:0.8rem; margin-top:16px;">{{ flags|length }} challenges total. Go find the rest.</p>
+  </div>
+</section>
+{% endblock %}

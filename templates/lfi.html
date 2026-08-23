@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Local File Inclusion — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Local File Inclusion</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">This viewer serves files from a public folder. Try <code>welcome.txt</code> first — then try leaving that folder.</p>
+    <label>File name</label>
+    <input type="text" id="lfi-name" value="welcome.txt">
+    <div style="margin-top:12px;"><button class="btn-mini" onclick="fetchFile()">View file</button></div>
+    <div class="output-box" id="lfi-out">// file content will appear here</div>
+  </div>
+</section>
+<script>
+async function fetchFile() {
+  const name = document.getElementById('lfi-name').value;
+  const res = await fetch('/api/file?name=' + encodeURIComponent(name));
+  const data = await res.json();
+  document.getElementById('lfi-out').textContent = (data.content || data.error || '');
+}
+</script>
+{% endblock %}

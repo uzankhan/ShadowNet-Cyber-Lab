@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}XXE — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>XXE — XML External Entity</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">This importer accepts XML with a <code>&lt;data&gt;</code> field and parses it. It also resolves <code>&lt;!ENTITY ... SYSTEM "file://..."&gt;</code> declarations.</p>
+    <label>XML payload</label>
+    <textarea id="xxe-body">&lt;?xml version="1.0"?&gt;
+&lt;data&gt;hello&lt;/data&gt;</textarea>
+    <div style="margin-top:12px;"><button class="btn-mini" onclick="parseXml()">Parse</button></div>
+    <div class="output-box" id="xxe-out">// parsed result will appear here</div>
+    <p style="color:var(--text-dim); font-size:0.78rem; margin-top:10px;">Vault files live under <code>vault/secret/</code> relative to the app.</p>
+  </div>
+</section>
+<script>
+async function parseXml() {
+  const body = document.getElementById('xxe-body').value;
+  const res = await fetch('/api/parsexml', {
+    method: 'POST',
+    headers: {'Content-Type': 'text/xml'},
+    body: body
+  });
+  const data = await res.json();
+  document.getElementById('xxe-out').textContent = data.parsed;
+}
+</script>
+{% endblock %}

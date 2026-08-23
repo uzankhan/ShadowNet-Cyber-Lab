@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Business Logic — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Business Logic / Price Tampering</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">Checkout accepts a <code>price</code> field straight from the client for the <b>{{ catalog['voucher']['name'] }}</b> (listed at ${{ catalog['voucher']['server_price'] }}).</p>
+    <label>Item</label>
+    <input type="text" id="logic-item" value="voucher" readonly>
+    <label>Price you'd like to pay</label>
+    <input type="number" id="logic-price" value="0.01" step="0.01">
+    <div style="margin-top:12px;"><button class="btn-mini" onclick="checkout()">Checkout</button></div>
+    <div class="output-box" id="logic-out">// receipt will appear here</div>
+  </div>
+</section>
+<script>
+async function checkout() {
+  const item_id = document.getElementById('logic-item').value;
+  const price = document.getElementById('logic-price').value;
+  const res = await fetch('/api/checkout', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({item_id, price})
+  });
+  document.getElementById('logic-out').textContent = JSON.stringify(await res.json(), null, 2);
+}
+</script>
+{% endblock %}

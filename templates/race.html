@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Race Condition — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Race Condition</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">This coupon is meant to be redeemable exactly once (<code>uses_left = {{ uses_left }}</code>). The check and the decrement aren't atomic — there's a deliberate delay between them.</p>
+    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn-mini" onclick="fireOnce()">Redeem once</button>
+      <button class="btn-mini" onclick="fireBurst()">Fire 5 requests at once</button>
+      <button class="btn-mini btn-hint" onclick="resetCoupon()">Reset coupon</button>
+    </div>
+    <div class="output-box" id="race-out">// results will appear here</div>
+  </div>
+</section>
+<script>
+async function redeem() {
+  const res = await fetch('/api/redeem', { method: 'POST' });
+  return res.json();
+}
+async function fireOnce() {
+  const data = await redeem();
+  document.getElementById('race-out').textContent = JSON.stringify(data, null, 2);
+}
+async function fireBurst() {
+  const out = document.getElementById('race-out');
+  out.textContent = 'firing 5 concurrent requests...';
+  const results = await Promise.all([redeem(), redeem(), redeem(), redeem(), redeem()]);
+  out.textContent = JSON.stringify(results, null, 2);
+}
+async function resetCoupon() {
+  await fetch('/api/redeem/reset', { method: 'POST' });
+  document.getElementById('race-out').textContent = 'coupon reset to 1 use.';
+}
+</script>
+{% endblock %}

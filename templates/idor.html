@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}IDOR — ShadowNet{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>IDOR — Insecure Direct Object Reference</h2>
+  <div class="panel">
+    <p style="color:var(--text-dim);">You're logged in as user id <b>{{ my_id }}</b>. Fetch your profile below — or anyone else's.</p>
+    <label>User ID</label>
+    <input type="number" id="idor-id" value="{{ my_id }}">
+    <div style="margin-top:12px;"><button class="btn-mini" onclick="fetchProfile()">Fetch profile</button></div>
+    <div class="output-box" id="idor-out">// response will appear here</div>
+  </div>
+</section>
+<script>
+async function fetchProfile() {
+  const id = document.getElementById('idor-id').value;
+  const res = await fetch('/api/profile/' + id);
+  const data = await res.json();
+  document.getElementById('idor-out').textContent = JSON.stringify(data, null, 2);
+}
+</script>
+{% endblock %}
