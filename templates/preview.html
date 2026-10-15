@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Statement Preview — ShadowBank</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+  </head>
+  <body>
+    <main class="container">
+      <h1>Statement / Email Preview</h1>
+      <form id="preview-form" method="GET" action="/admin/preview">
+        <label for="template">Template (Jinja2):</label><br>
+        <textarea name="template" id="template" rows="10" cols="80">Dear {{ user.full_name }},\nYour balance is {{ user.balance }}\n</textarea><br>
+        <button type="submit">Render Preview</button>
+      </form>
+
+      <section id="preview-result">
+        {% if rendered is defined %}
+          <h2>Rendered Output</h2>
+          <pre>{{ rendered }}</pre>
+        {% endif %}
+      </section>
+
+      <p><a href="/admin">Back to admin</a></p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,2 @@
+# added routes: admin preview, generate report (gated), admin import (gated)
+# note: this file replacement preserves existing code and appends new endpoints

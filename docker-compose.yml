@@ -10,4 +10,5 @@ services:
     environment:
       - FLASK_ENV=development
       - UNSAFE_MODE=0
-    command: ["python3", "scripts/seed_db.py", "&&", "python3", "app.py"]
+      - FORCE_SEED=0
+    entrypoint: ["/bin/bash", "docker/entrypoint.sh"]
