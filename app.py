@@ -119,6 +119,16 @@ def record_progress(session_id, challenge_id):
         # be forgiving in the demo app
         pass
 
+def record_attempt(session_id, route, payload):
+    try:
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO attempts (session_id, route, payload) VALUES (?, ?, ?)', (str(session_id), route, str(payload)))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
 # In-memory IDOR "user profiles"
 PROFILES = {
     0: {"id": 0, "username": "admin", "role": "admin", "private_note": FLAG_BY_ID["idor"]["value"]},
@@ -321,6 +331,26 @@ def api_login():
             "query_used": query,
         })
     return jsonify({"success": False, "query_used": query})
+
+@app.route("/api/search", methods=["POST"])
+def api_search():
+    # Legacy admin search endpoint (vulnerable to SQL injection)
+    data = request.get_json(silent=True) or request.form
+    q = data.get("q", "")
+    conn = get_db_conn()
+    cur = conn.cursor()
+    # VULNERABLE: constructing SQL with string interpolation; intended for teaching
+    query = f"SELECT id, username, role, note FROM users WHERE username LIKE '%{q}%'"
+    # record the raw query as an attempt for instructor review
+    record_attempt(session.get("uid", "anon"), "/api/search", query)
+    try:
+        cur.execute(query)
+        rows = [dict(r) for r in cur.fetchall()]
+    except sqlite3.Error as e:
+        conn.close()
+        return jsonify({"error": str(e), "query_used": query}), 400
+    conn.close()
+    return jsonify({"results": rows, "query_used": query})
 
 # ---------------------------------------------------------------------------
 # 5. Command Injection
