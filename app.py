@@ -75,9 +75,11 @@ HINTS = {
 # In-memory "users table" — used by the real SQLite DB below (SQLi target)
 DB_PATH = os.path.join(BASE_DIR, "shadownet.db")
 
+# Only initialize the embedded DB if it doesn't exist; the seed script will create it.
 def init_db():
     if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
+        # DB already exists (created by scripts/seed_db.py or previous run) — keep it
+        return
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("""CREATE TABLE users (
@@ -99,6 +101,23 @@ def init_db():
     conn.close()
 
 init_db()
+
+# DB helper
+def get_db_conn():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def record_progress(session_id, challenge_id):
+    try:
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO progress (session_id, challenge) VALUES (?, ?)', (str(session_id), challenge_id))
+        conn.commit()
+        conn.close()
+    except Exception:
+        # be forgiving in the demo app
+        pass
 
 # In-memory IDOR "user profiles"
 PROFILES = {
@@ -205,6 +224,11 @@ def submit_flag():
         fid = VALID_FLAG_VALUES[submitted]
         already = fid in captured()
         mark_captured(fid)
+        # Record progress in the DB for instructor visibility
+        try:
+            record_progress(session.get("uid", "anon"), fid)
+        except Exception:
+            pass
         return jsonify({
             "correct": True,
             "already_captured": already,
